@@ -4,7 +4,7 @@ from firebase_admin import credentials, firestore
 
 def initialize_firebase():
     try:
-        cred = credentials.Certificate(os.getenv("FIREBASE_CREDENTIALS"))
+        cred = credentials.Certificate("serviceAccountKey.json")
         firebase_admin.initialize_app(cred)
         db = firestore.client()
         print("Firebase and Firestore initialized successfully")

@@ -1,11 +1,14 @@
 import firebase_admin
-from firebase_admin import credentials
+from firebase_admin import credentials, firestore
 import os
 
 def initialize_firebase():
     try:
-        cred = credentials.Certificate("serviceAccountKey.json")  # Ubah path
+        cred = credentials.Certificate("serviceAccountKey.json")
         firebase_admin.initialize_app(cred)
-        print("Firebase initialized successfully")  # Debug print
+        db = firestore.client()
+        print("Firebase and Firestore initialized successfully")
+        return db
     except Exception as e:
-        print(f"Error initializing Firebase: {e}")  # Debug print
+        print(f"Error initializing Firebase: {e}")
+        raise e

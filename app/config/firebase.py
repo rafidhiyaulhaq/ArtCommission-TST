@@ -1,3 +1,4 @@
+# config/firebase.py
 import os
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -12,3 +13,6 @@ def initialize_firebase():
     except Exception as e:
         print(f"Error initializing Firebase: {e}")
         raise e
+
+# Get Firebase db instance
+db = initialize_firebase()

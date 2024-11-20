@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .config.firebase import initialize_firebase
+from .app.config.firebase import initialize_firebase
 
 app = FastAPI(title="ArtCommission API")
 
@@ -17,7 +17,7 @@ app.add_middleware(
 initialize_firebase()
 
 # Import routers
-from .routers import auth
+from .app.routers import auth
 
 # Include routers
 app.include_router(auth.router)

@@ -1,9 +1,9 @@
-// frontend/src/pages/artist/DashboardPage.jsx
+// frontend/src/pages/client/DashboardPage.jsx
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/common/Navbar';
 
-const ArtistDashboard = () => {
+const ClientDashboard = () => {
   const { user } = useAuth();
 
   return (
@@ -14,22 +14,22 @@ const ArtistDashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Stats Cards */}
             <div className="bg-white overflow-hidden shadow rounded-lg">
-              {/* ... Active Commissions Card ... */}
+              {/* ... Active Orders Card ... */}
             </div>
 
             <div className="bg-white overflow-hidden shadow rounded-lg">
-              {/* ... Total Earnings Card ... */}
+              {/* ... Total Spent Card ... */}
             </div>
           </div>
 
-          {/* Recent Activity */}
+          {/* Recent Orders */}
           <div className="mt-8">
             <h2 className="text-lg leading-6 font-medium text-gray-900">
-              Recent Activity
+              Recent Orders
             </h2>
             <div className="mt-4 bg-white shadow overflow-hidden sm:rounded-lg">
               <div className="p-6">
-                <p className="text-gray-500">No recent activity</p>
+                <p className="text-gray-500">No recent orders</p>
               </div>
             </div>
           </div>
@@ -39,4 +39,4 @@ const ArtistDashboard = () => {
   );
 };
 
-export default ArtistDashboard;
+export default ClientDashboard;

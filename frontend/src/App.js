@@ -5,7 +5,15 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
-import DashboardPage from './pages/common/DashboardPage';
+import ArtistDashboard from './pages/artist/DashboardPage';
+import ClientDashboard from './pages/client/DashboardPage';
+import PortfolioPage from './pages/artist/PortfolioPage';
+import { useAuth } from './context/AuthContext';
+
+const DashboardRoute = () => {
+  const { user } = useAuth();
+  return user?.role === 'artist' ? <ArtistDashboard /> : <ClientDashboard />;
+};
 
 function App() {
   return (
@@ -19,7 +27,15 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <DashboardPage />
+                <DashboardRoute />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/portfolio"
+            element={
+              <ProtectedRoute>
+                <PortfolioPage />
               </ProtectedRoute>
             }
           />

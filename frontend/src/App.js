@@ -1,13 +1,14 @@
 // frontend/src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext'; // Tambahkan import useAuth
+import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import ArtistDashboard from './pages/artist/DashboardPage';
 import ClientDashboard from './pages/client/DashboardPage';
 import PortfolioPage from './pages/artist/PortfolioPage';
+import BrowseArtistsPage from './pages/client/BrowseArtistsPage';
 
 // Pisahkan DashboardRoute ke komponen terpisah
 const DashboardRoute = () => {
@@ -37,6 +38,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <PortfolioPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/browse-artists"
+            element={
+              <ProtectedRoute>
+                <BrowseArtistsPage />
               </ProtectedRoute>
             }
           />

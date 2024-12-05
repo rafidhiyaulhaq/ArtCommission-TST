@@ -1,6 +1,8 @@
 // backend/src/app.js
 const express = require('express');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 const authRoutes = require('./routes/auth');
 const portfolioRoutes = require('./routes/portfolio');
 require('dotenv').config();
@@ -11,6 +13,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 // Routes
 app.use('/auth', authRoutes);
 app.use('/portfolio', portfolioRoutes);
@@ -19,7 +24,8 @@ app.use('/portfolio', portfolioRoutes);
 app.get('/', (req, res) => {
   res.json({
     message: "Welcome to ArtCommission API",
-    version: "1.0"
+    version: "1.0",
+    documentation: "/api-docs"
   });
 });
 
@@ -42,6 +48,7 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`API Documentation available at http://localhost:${PORT}/api-docs`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 

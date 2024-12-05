@@ -16,7 +16,6 @@ const DashboardRoute = () => {
   return user?.role === 'artist' ? <ArtistDashboard /> : <ClientDashboard />;
 };
 
-// Bungkus aplikasi dengan AuthProvider
 function App() {
   return (
     <AuthProvider>

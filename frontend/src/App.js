@@ -19,7 +19,7 @@ const DashboardRoute = () => {
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Router basename="/ArtCommission-TST">
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="/login" element={<LoginPage />} />

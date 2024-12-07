@@ -1,6 +1,6 @@
 // frontend/src/pages/auth/RegisterPage.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { auth } from '../../config/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -42,7 +42,6 @@ const RegisterPage = () => {
         formData.password
       );
 
-      // Save additional user data to backend
       const token = await userCredential.user.getIdToken();
       
       const response = await fetch('http://localhost:8000/auth/register', {
@@ -168,12 +167,12 @@ const RegisterPage = () => {
           </div>
 
           <div className="text-sm text-center">
-            <a 
-              href="/login" 
+            <Link 
+              to="/login" 
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
               Already have an account? Sign in
-            </a>
+            </Link>
           </div>
         </form>
       </div>

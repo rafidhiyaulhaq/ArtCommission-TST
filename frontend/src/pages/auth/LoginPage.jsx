@@ -1,6 +1,6 @@
 // frontend/src/pages/auth/LoginPage.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { auth } from '../../config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
@@ -36,7 +36,6 @@ const LoginPage = () => {
       const token = await userCredential.user.getIdToken();
       localStorage.setItem('token', token);
       
-      // Redirect ke dashboard
       navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
@@ -102,12 +101,12 @@ const LoginPage = () => {
           </div>
 
           <div className="text-sm text-center">
-            <a 
-              href="/register" 
+            <Link
+              to="/register"
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
               Don't have an account? Sign up
-            </a>
+            </Link>
           </div>
         </form>
       </div>

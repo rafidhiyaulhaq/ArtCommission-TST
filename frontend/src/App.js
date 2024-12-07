@@ -48,6 +48,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+          {/* Add catch-all route */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
     </AuthProvider>

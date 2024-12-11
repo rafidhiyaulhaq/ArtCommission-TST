@@ -1,10 +1,12 @@
+// frontend/src/pages/auth/LoginPage.jsx
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { auth } from '../../config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -35,7 +37,9 @@ const LoginPage = () => {
       const token = await userCredential.user.getIdToken();
       localStorage.setItem('token', token);
       
-      navigate('/dashboard');
+      // Redirect to the page they tried to visit or dashboard
+      const from = location.state?.from?.pathname || "/dashboard";
+      navigate(from);
     } catch (error) {
       console.error('Login error:', error);
       setError(error.message);

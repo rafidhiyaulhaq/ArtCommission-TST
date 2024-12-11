@@ -1,26 +1,26 @@
-// frontend/src/pages/client/OrdersPage.jsx
+// frontend/src/pages/client/MessagesPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/common/Navbar';
 
-const OrdersPage = () => {
+const MessagesPage = () => {
   const { user } = useAuth();
-  const [orders, setOrders] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchMessages = async () => {
       try {
-        // TODO: Implement order fetching logic
-        setOrders([]);
+        // TODO: Implement message fetching logic
+        setMessages([]);
       } catch (error) {
-        console.error('Error fetching orders:', error);
+        console.error('Error fetching messages:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchOrders();
+    fetchMessages();
   }, [user]);
 
   if (loading) {
@@ -35,17 +35,17 @@ const OrdersPage = () => {
     <div className="min-h-screen bg-gray-100">
       <Navbar />
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 mt-16">
-        <h1 className="text-2xl font-bold mb-6">My Orders</h1>
+        <h1 className="text-2xl font-bold mb-6">Messages</h1>
         
-        {orders.length === 0 ? (
+        {messages.length === 0 ? (
           <div className="bg-white shadow rounded-lg p-6 text-center">
-            <p className="text-gray-500">No orders yet</p>
+            <p className="text-gray-500">No messages yet</p>
           </div>
         ) : (
           <div className="grid gap-6">
-            {orders.map(order => (
-              <div key={order.id} className="bg-white shadow rounded-lg p-6">
-                <p>Order details will go here</p>
+            {messages.map(message => (
+              <div key={message.id} className="bg-white shadow rounded-lg p-6">
+                <p>Message details will go here</p>
               </div>
             ))}
           </div>
@@ -55,4 +55,4 @@ const OrdersPage = () => {
   );
 };
 
-export default OrdersPage;
+export default MessagesPage;

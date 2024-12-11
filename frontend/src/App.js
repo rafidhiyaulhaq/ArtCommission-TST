@@ -9,6 +9,9 @@ import ArtistDashboard from './pages/artist/DashboardPage';
 import ClientDashboard from './pages/client/DashboardPage';
 import PortfolioPage from './pages/artist/PortfolioPage';
 import BrowseArtistsPage from './pages/client/BrowseArtistsPage';
+import OrdersPage from './pages/client/OrdersPage';
+import MessagesPage from './pages/client/MessagesPage';
+import CommissionsPage from './pages/artist/CommissionsPage';
 
 // Pisahkan DashboardRoute ke komponen terpisah
 const DashboardRoute = () => {
@@ -45,6 +48,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <BrowseArtistsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <OrdersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRoute>
+                <MessagesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/commissions"
+            element={
+              <ProtectedRoute>
+                <CommissionsPage />
               </ProtectedRoute>
             }
           />

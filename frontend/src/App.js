@@ -11,7 +11,7 @@ import PortfolioPage from './pages/artist/PortfolioPage';
 import BrowseArtistsPage from './pages/client/BrowseArtistsPage';
 import OrdersPage from './pages/client/OrdersPage';
 import MessagesPage from './pages/client/MessagesPage';
-import CommissionsPage from './pages/artist/CommissionsPage.jsx';  // Tambahkan .jsx
+import CommissionsPage from './pages/artist/CommissionsPage';  // Tambahkan .jsx
 
 const DashboardRoute = () => {
   const { user } = useAuth();

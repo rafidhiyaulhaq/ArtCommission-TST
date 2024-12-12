@@ -1,20 +1,19 @@
 import { auth } from '../config/firebase';
-import { 
+import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut 
+  signOut
 } from 'firebase/auth';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_URL = 'https://artcommission-tst-production.up.railway.app';
 
 export const authService = {
   async register({ email, password, role, fullName }) {
     try {
-      // Create user in Firebase Auth
+      console.log('Starting registration at:', API_URL);
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const token = await userCredential.user.getIdToken();
 
-      // Register user in backend
       const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: {
@@ -35,10 +34,11 @@ export const authService = {
 
       const data = await response.json();
       localStorage.setItem('token', token);
-
+      
+      console.log('Registration successful');
       return data;
     } catch (error) {
-      // If backend registration fails, delete the Firebase user
+      console.error('Registration error:', error);
       if (auth.currentUser) {
         await auth.currentUser.delete();
       }

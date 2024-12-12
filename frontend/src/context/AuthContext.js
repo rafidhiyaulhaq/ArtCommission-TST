@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { auth } from '../config/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
+const API_URL = 'https://artcommission-tst-production.up.railway.app';
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
@@ -9,11 +10,13 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('Setting up auth state listener');
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
+          console.log('User authenticated, fetching additional data');
           const token = await firebaseUser.getIdToken();
-          const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/auth/me`, {
+          const response = await fetch(`${API_URL}/auth/me`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -24,12 +27,14 @@ export const AuthProvider = ({ children }) => {
           }
           
           const data = await response.json();
+          console.log('User data fetched successfully');
           setUser({ ...firebaseUser, ...data.user });
         } catch (error) {
           console.error('Error fetching user data:', error);
           setUser(firebaseUser);
         }
       } else {
+        console.log('No user authenticated');
         setUser(null);
       }
       setLoading(false);
@@ -57,3 +62,5 @@ export const useAuth = () => {
   }
   return context;
 };
+
+export default AuthContext;

@@ -1,8 +1,7 @@
 // frontend/src/pages/auth/RegisterPage.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { auth } from '../../config/firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { authService } from '../../services/auth';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -36,36 +35,17 @@ const RegisterPage = () => {
     setLoading(true);
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-      );
-
-      const token = await userCredential.user.getIdToken();
-      
-      const response = await fetch('http://localhost:8000/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          role: formData.role,
-          fullName: formData.fullName
-        })
+      await authService.register({
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+        fullName: formData.fullName
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to save user data');
-      }
-
-      localStorage.setItem('token', token);
+      
       navigate('/dashboard');
     } catch (error) {
       console.error('Registration error:', error);
-      setError(error.message);
+      setError(error.message || 'Failed to register. Please try again.');
     } finally {
       setLoading(false);
     }

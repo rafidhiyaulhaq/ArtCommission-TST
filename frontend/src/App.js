@@ -11,8 +11,7 @@ import PortfolioPage from './pages/artist/PortfolioPage';
 import BrowseArtistsPage from './pages/client/BrowseArtistsPage';
 import OrdersPage from './pages/client/OrdersPage';
 import MessagesPage from './pages/client/MessagesPage';
-import CommissionsPage from './pages/artist/CommissionsPage.jsx';  // tambahkan .jsx
-import OrdersPage from './pages/client/OrdersPage.jsx';  // tambahkan .jsx
+import CommissionsPage from './pages/artist/CommissionsPage';
 
 // Pisahkan DashboardRoute ke komponen terpisah
 const DashboardRoute = () => {

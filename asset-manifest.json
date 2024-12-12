@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/ArtCommission-TST/static/css/main.7787c39f.css",
-    "main.js": "/ArtCommission-TST/static/js/main.b18eb382.js",
+    "main.css": "/ArtCommission-TST/static/css/main.e8737755.css",
+    "main.js": "/ArtCommission-TST/static/js/main.58332ba4.js",
     "index.html": "/ArtCommission-TST/index.html",
-    "main.7787c39f.css.map": "/ArtCommission-TST/static/css/main.7787c39f.css.map",
-    "main.b18eb382.js.map": "/ArtCommission-TST/static/js/main.b18eb382.js.map"
+    "main.e8737755.css.map": "/ArtCommission-TST/static/css/main.e8737755.css.map",
+    "main.58332ba4.js.map": "/ArtCommission-TST/static/js/main.58332ba4.js.map"
   },
   "entrypoints": [
-    "static/css/main.7787c39f.css",
-    "static/js/main.b18eb382.js"
+    "static/css/main.e8737755.css",
+    "static/js/main.58332ba4.js"
   ]
 }

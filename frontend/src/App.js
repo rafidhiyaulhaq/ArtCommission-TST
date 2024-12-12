@@ -11,9 +11,8 @@ import PortfolioPage from './pages/artist/PortfolioPage';
 import BrowseArtistsPage from './pages/client/BrowseArtistsPage';
 import OrdersPage from './pages/client/OrdersPage';
 import MessagesPage from './pages/client/MessagesPage';
-import CommissionsPage from './pages/artist/CommissionsPage';
+import CommissionsPage from './pages/artist/CommissionsPage.jsx';  // Tambahkan .jsx
 
-// Pisahkan DashboardRoute ke komponen terpisah
 const DashboardRoute = () => {
   const { user } = useAuth();
   return user?.role === 'artist' ? <ArtistDashboard /> : <ClientDashboard />;
@@ -75,7 +74,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* Add catch-all route */}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>

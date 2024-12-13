@@ -39,7 +39,6 @@ const RegisterPage = () => {
    try {
      console.log('Attempting Firebase registration for:', formData.email);
      
-     // Firebase registration
      const userCredential = await createUserWithEmailAndPassword(
        auth,
        formData.email,
@@ -49,7 +48,6 @@ const RegisterPage = () => {
      console.log('Firebase registration successful, getting token...');
      const token = await userCredential.user.getIdToken();
 
-     // Backend registration
      console.log('Sending data to backend...');
      const response = await fetch('https://artcommission-tst-production.up.railway.app/auth/register', {
        method: 'POST',
@@ -58,18 +56,24 @@ const RegisterPage = () => {
          'Authorization': `Bearer ${token}`
        },
        body: JSON.stringify({
+         uid: userCredential.user.uid,
          email: formData.email,
          role: formData.role,
          fullName: formData.fullName
        })
      });
 
+     console.log('Backend response status:', response.status);
+
      if (!response.ok) {
-       // If backend fails, delete Firebase user
+       const errorData = await response.json().catch(() => ({}));
+       console.error('Backend error response:', errorData);
+       
        if (auth.currentUser) {
          await auth.currentUser.delete();
        }
-       throw new Error('Failed to complete registration');
+       
+       throw new Error(errorData.error || `Backend error: ${response.status}`);
      }
 
      const data = await response.json();
@@ -84,21 +88,24 @@ const RegisterPage = () => {
        fullError: error
      });
 
-     // Handle Firebase-specific errors
      if (error.code === 'auth/email-already-in-use') {
        setError('This email is already registered. Please use a different email or sign in.');
      } else if (error.code === 'auth/invalid-email') {
        setError('Invalid email address. Please check your email.');
      } else if (error.code === 'auth/weak-password') {
-       setError('Password is too weak. Please use a stronger password.');
+       setError('Password must be at least 6 characters.');
+     } else if (error.message.includes('Backend error: 500')) {
+       setError('Server error. Please try again later.');
+     } else if (error.message.includes('Backend error: 404')) {
+       setError('Registration service is currently unavailable.');
      } else {
-       setError(error.message || 'Failed to register. Please try again.');
+       setError('Failed to complete registration. Please try again.');
      }
 
-     // Clean up Firebase user if backend registration failed
      if (auth.currentUser) {
        try {
          await auth.currentUser.delete();
+         console.log('Cleaned up Firebase user due to registration failure');
        } catch (deleteError) {
          console.error('Error cleaning up Firebase user:', deleteError);
        }

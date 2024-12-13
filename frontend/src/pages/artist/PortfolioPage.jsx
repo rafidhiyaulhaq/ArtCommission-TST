@@ -5,10 +5,13 @@ import Navbar from '../../components/common/Navbar';
 import { storage } from '../../config/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
+const API_URL = 'https://artcommission-tst-production.up.railway.app';
+
 const PortfolioPage = () => {
   const { user } = useAuth();
   const [portfolios, setPortfolios] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -23,35 +26,47 @@ const PortfolioPage = () => {
 
   const fetchPortfolios = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/portfolio/${user.uid}`);
+      console.log('Fetching portfolios for user:', user?.uid);
+      const response = await fetch(`${API_URL}/portfolio/${user.uid}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch portfolios');
+      }
       const data = await response.json();
+      console.log('Portfolios fetched:', data);
       setPortfolios(data.portfolios);
     } catch (error) {
       console.error('Error fetching portfolios:', error);
+      setError('Failed to load portfolios');
     }
   };
 
   const handleImageUpload = async (file) => {
+    console.log('Uploading image:', file.name);
     const storageRef = ref(storage, `portfolio/${user.uid}/${file.name}`);
     await uploadBytes(storageRef, file);
-    return await getDownloadURL(storageRef);
+    const url = await getDownloadURL(storageRef);
+    console.log('Image uploaded successfully');
+    return url;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
 
     try {
+      console.log('Submitting portfolio form');
       let imageUrl = null;
       if (formData.image) {
         imageUrl = await handleImageUpload(formData.image);
       }
 
-      const response = await fetch('http://localhost:8000/portfolio', {
+      const token = await user.getIdToken();
+      const response = await fetch(`${API_URL}/portfolio`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${await user.getIdToken()}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           ...formData,
@@ -59,8 +74,11 @@ const PortfolioPage = () => {
         })
       });
 
-      if (!response.ok) throw new Error('Failed to create portfolio');
+      if (!response.ok) {
+        throw new Error('Failed to create portfolio');
+      }
 
+      console.log('Portfolio created successfully');
       setFormData({
         title: '',
         description: '',
@@ -72,6 +90,7 @@ const PortfolioPage = () => {
       fetchPortfolios();
     } catch (error) {
       console.error('Error creating portfolio:', error);
+      setError('Failed to create portfolio item');
     } finally {
       setLoading(false);
     }
@@ -81,6 +100,12 @@ const PortfolioPage = () => {
     <div className="min-h-screen bg-gray-100">
       <Navbar />
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+        
         {/* Add Portfolio Form */}
         <div className="bg-white shadow sm:rounded-lg mb-6">
           <div className="px-4 py-5 sm:p-6">

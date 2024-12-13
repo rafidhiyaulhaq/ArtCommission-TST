@@ -4,9 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/common/Navbar';
 
+const API_URL = 'https://artcommission-tst-production.up.railway.app';
+
 const BrowseArtistsPage = () => {
   const [artists, setArtists] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const navigate = useNavigate();
@@ -26,11 +29,17 @@ const BrowseArtistsPage = () => {
 
   const fetchArtists = async () => {
     try {
-      const response = await fetch('http://localhost:8000/portfolio/artists');
+      console.log('Fetching artists from:', API_URL);
+      const response = await fetch(`${API_URL}/portfolio/artists`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch artists');
+      }
       const data = await response.json();
+      console.log('Artists fetched:', data);
       setArtists(data.artists);
     } catch (error) {
       console.error('Error fetching artists:', error);
+      setError('Failed to load artists');
     } finally {
       setLoading(false);
     }
@@ -48,6 +57,12 @@ const BrowseArtistsPage = () => {
     <div className="min-h-screen bg-gray-100">
       <Navbar />
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+
         {/* Search and Filter Section */}
         <div className="mb-8 bg-white p-4 rounded-lg shadow">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

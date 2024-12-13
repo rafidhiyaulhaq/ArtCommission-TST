@@ -1,7 +1,8 @@
 // frontend/src/pages/auth/RegisterPage.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { authService } from '../../services/auth';
+import { auth } from '../../config/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const RegisterPage = () => {
  const navigate = useNavigate();
@@ -9,7 +10,7 @@ const RegisterPage = () => {
    email: '',
    password: '',
    confirmPassword: '',
-   role: 'client', 
+   role: 'client',
    fullName: ''
  });
  const [error, setError] = useState('');
@@ -26,7 +27,7 @@ const RegisterPage = () => {
  const handleSubmit = async (e) => {
    e.preventDefault();
    setError('');
-   console.log('Starting registration process...'); 
+   console.log('Starting registration process...');
 
    if (formData.password !== formData.confirmPassword) {
      setError('Passwords do not match');
@@ -36,28 +37,72 @@ const RegisterPage = () => {
    setLoading(true);
 
    try {
-     console.log('Form data being sent:', {
-       email: formData.email,
-       role: formData.role,
-       fullName: formData.fullName
+     console.log('Attempting Firebase registration for:', formData.email);
+     
+     // Firebase registration
+     const userCredential = await createUserWithEmailAndPassword(
+       auth,
+       formData.email,
+       formData.password
+     );
+
+     console.log('Firebase registration successful, getting token...');
+     const token = await userCredential.user.getIdToken();
+
+     // Backend registration
+     console.log('Sending data to backend...');
+     const response = await fetch('https://artcommission-tst-production.up.railway.app/auth/register', {
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json',
+         'Authorization': `Bearer ${token}`
+       },
+       body: JSON.stringify({
+         email: formData.email,
+         role: formData.role,
+         fullName: formData.fullName
+       })
      });
 
-     await authService.register({
-       email: formData.email,
-       password: formData.password,
-       role: formData.role,
-       fullName: formData.fullName
-     });
+     if (!response.ok) {
+       // If backend fails, delete Firebase user
+       if (auth.currentUser) {
+         await auth.currentUser.delete();
+       }
+       throw new Error('Failed to complete registration');
+     }
 
-     console.log('Registration with authService successful');
+     const data = await response.json();
+     console.log('Registration successful:', data);
+     
+     localStorage.setItem('token', token);
      navigate('/dashboard');
    } catch (error) {
      console.error('Detailed registration error:', {
+       code: error.code,
        message: error.message,
-       stack: error.stack,
-       error
+       fullError: error
      });
-     setError(error.message || 'Failed to register. Please try again.');
+
+     // Handle Firebase-specific errors
+     if (error.code === 'auth/email-already-in-use') {
+       setError('This email is already registered. Please use a different email or sign in.');
+     } else if (error.code === 'auth/invalid-email') {
+       setError('Invalid email address. Please check your email.');
+     } else if (error.code === 'auth/weak-password') {
+       setError('Password is too weak. Please use a stronger password.');
+     } else {
+       setError(error.message || 'Failed to register. Please try again.');
+     }
+
+     // Clean up Firebase user if backend registration failed
+     if (auth.currentUser) {
+       try {
+         await auth.currentUser.delete();
+       } catch (deleteError) {
+         console.error('Error cleaning up Firebase user:', deleteError);
+       }
+     }
    } finally {
      console.log('Registration process completed');
      setLoading(false);
